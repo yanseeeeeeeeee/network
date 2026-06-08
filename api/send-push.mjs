@@ -30,6 +30,15 @@ export default async function handler(req, res) {
     });
   }
 
+  const secret = req.headers['x-push-secret'];
+
+if (secret !== process.env.PUSH_SECRET) {
+  return res.status(401).json({
+    ok: false,
+    error: 'Unauthorized',
+  });
+}
+
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
