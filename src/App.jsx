@@ -8,18 +8,22 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import { useEffect } from 'react';
 
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { onAuthStateChanged } from 'firebase/auth';
 
 import ProtectedRoute from './routes/ProtectedRoute';
 import AuthRoute from './routes/AuthRoute';
 
 import { auth } from './firebase';
+import AdminPush from './pages/AdminPush'
 
 export default function App() {
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const ADMIN_EMAILS = [
+    "anasemenova56966@gmail.com"
+  ];
 
   useEffect(() => {
 
@@ -55,6 +59,18 @@ export default function App() {
         <ProtectedRoute user={user}>
           <Home/>
         </ProtectedRoute>
+        }
+        />
+        <Route
+        path="/admin-push"
+        element={
+          <ProtectedRoute user={user}>
+            {ADMIN_EMAILS.includes(user?.email) ? (
+              <AdminPush/>
+            ) : (
+              <Navigate to="/home" replace/>
+            )}
+          </ProtectedRoute>
         }
         />
     </Routes>
